@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { 
   CheckCircle2, Clock, ListTodo, Search, 
   Calendar, User, AlertCircle, ChevronRight, 
-  MoreVertical, Filter, ArrowUpRight, MessageSquare, X, Send
+  MoreVertical, ArrowUpRight, MessageSquare, X, Send
 } from 'lucide-react';
 
 const Tasks = () => {
@@ -101,9 +101,6 @@ const Tasks = () => {
               className="w-full bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl py-3 pl-12 pr-4 text-sm text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all shadow-sm"
             />
           </div>
-          <button className="p-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl text-slate-500 hover:text-[var(--color-foreground)] transition-colors">
-            <Filter size={20} />
-          </button>
         </div>
       </div>
 
@@ -128,7 +125,7 @@ const Tasks = () => {
             <div className="space-y-4 min-h-[500px]">
               {filteredTasks.filter(t => t.status === category.id).map(task => (
                 <div 
-                  key={task._id} 
+                  key={task.id} 
                   className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm hover:shadow-premium transition-all group cursor-pointer relative overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -152,7 +149,7 @@ const Tasks = () => {
                         {['TODO', 'IN_PROGRESS', 'DONE'].filter(s => s !== task.status).map(s => (
                           <button 
                             key={s}
-                            onClick={(e) => { e.stopPropagation(); handleStatusChange(task._id, s); }}
+                            onClick={(e) => { e.stopPropagation(); handleStatusChange(task.id, s); }}
                             className="w-full text-left px-3 py-2.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-[var(--color-primary)] hover:text-[var(--color-primary-foreground)] font-bold transition-colors"
                           >
                             {s === 'DONE' ? 'Completed' : s.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
@@ -169,23 +166,30 @@ const Tasks = () => {
                     {task.description || 'No description provided.'}
                   </p>
 
-                  {task.comments && task.comments.length > 0 && (
+                  {(() => {
+                    let commentsList = [];
+                    if (typeof task.comments === 'string') {
+                      try { commentsList = JSON.parse(task.comments); } catch (e) {}
+                    } else if (Array.isArray(task.comments)) {
+                      commentsList = task.comments;
+                    }
+                    return commentsList.length > 0 && (
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg mb-4 border border-slate-100 dark:border-slate-800">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                          <MessageSquare size={12} /> {task.comments.length} Comments
+                          <MessageSquare size={12} /> {commentsList.length} Comments
                         </div>
                       </div>
                       <div className="space-y-2">
-                        {task.comments.slice(-2).map(comment => (
-                          <div key={comment._id} className="text-xs">
+                        {commentsList.slice(-2).map(comment => (
+                          <div key={comment._id || comment.id || Math.random()} className="text-xs">
                             <span className="font-bold text-slate-700 dark:text-slate-300 mr-1">{comment.author?.name}:</span>
                             <span className="text-slate-600 dark:text-slate-400">"{comment.text}"</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                  )}
+                  )})()}
 
                   <div className="flex items-center justify-between pt-5 border-t border-[var(--color-border)]">
                     <div className="flex items-center gap-4 text-slate-400">
@@ -208,7 +212,7 @@ const Tasks = () => {
                     </div>
                   </div>
                   <button 
-                    onClick={() => setCommentModal({ isOpen: true, taskId: task._id, text: '' })} 
+                    onClick={() => setCommentModal({ isOpen: true, taskId: task.id, text: '' })} 
                     className="w-full mt-4 py-2 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-500 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/5 transition-all text-center"
                   >
                     + Add Comment

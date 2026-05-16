@@ -12,3 +12,4 @@ artifacts/
 database.sqlite*
 *.sqlite
 *.sqlite-journal
+.vercel

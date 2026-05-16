@@ -44,7 +44,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   
   // Sync database after binding to port to satisfy health checks
-  sequelize.sync({ alter: true })
+  sequelize.sync()
     .then(() => {
       console.log('✅ SQLite Database Synced');
     })

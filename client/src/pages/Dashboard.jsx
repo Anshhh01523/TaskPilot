@@ -110,7 +110,7 @@ const Dashboard = () => {
     tasks.forEach(task => {
       // Assignment/Creation
       list.push({
-        id: `create-${task._id}`,
+        id: `create-${task.id}`,
         user: task.assignedTo?.name || 'System',
         action: 'was assigned to',
         target: task.title,
@@ -125,7 +125,7 @@ const Dashboard = () => {
       // Status Changes
       if (task.status === 'DONE') {
         list.push({
-          id: `complete-${task._id}`,
+          id: `complete-${task.id}`,
           user: task.assignedTo?.name || 'Team',
           action: 'completed',
           target: task.title,
@@ -138,7 +138,7 @@ const Dashboard = () => {
         });
       } else if (task.status === 'IN_PROGRESS') {
         list.push({
-          id: `status-${task._id}`,
+          id: `status-${task.id}`,
           user: task.assignedTo?.name || 'Team',
           action: 'moved',
           target: `${task.title} to In Progress`,
@@ -164,7 +164,7 @@ const Dashboard = () => {
 
   const onlineMembers = useMemo(() => {
     return users.slice(0, 6).map(u => ({
-      id: u._id,
+      id: u.id,
       name: u.name,
       initial: u.name.charAt(0),
       color: ['from-indigo-400 to-indigo-600', 'from-emerald-400 to-emerald-600', 'from-purple-400 to-purple-600'][Math.floor(Math.random() * 3)]
@@ -243,22 +243,20 @@ const Dashboard = () => {
             </div>
           </div>
           
-          <div className="relative flex-1 pl-4">
+          <div className="relative flex-1 overflow-y-auto">
             {/* Vertical Line */}
-            <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-slate-100 dark:bg-slate-700"></div>
+            <div className="absolute left-[19px] top-5 bottom-5 w-[2px] bg-slate-100 dark:bg-slate-700"></div>
             
-            <div className="space-y-8">
+            <div className="space-y-6">
               {filteredActivities.length > 0 ? filteredActivities.map((activity) => (
-                <div key={activity.id} className="relative flex items-start gap-5 group">
+                <div key={activity.id} className="relative flex items-start gap-4 group">
                   <div className={`w-10 h-10 rounded-full flex-shrink-0 bg-gradient-to-tr ${activity.avatarColor} border-4 border-[var(--color-card)] shadow-sm flex items-center justify-center text-white text-sm font-bold z-10`}>
                     {activity.user.charAt(0)}
                   </div>
-                  <div className="flex-1 pt-1">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <div className="flex-1 pt-1 min-w-0">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                       <span className="font-bold text-[var(--color-foreground)]">{activity.user}</span>{' '}
-                      {activity.action === 'completed' ? 'completed' : 
-                       activity.action === 'updated' ? 'moved' : 
-                       activity.action === 'commented on' ? 'commented on' : 'created'}{' '}
+                      {activity.action}{' '}
                       <span className="font-bold text-[var(--color-foreground)]">{activity.target}</span>
                     </p>
                     <div className="flex items-center gap-2 mt-1.5">
@@ -293,7 +291,7 @@ const Dashboard = () => {
             </div>
             <div className="space-y-6">
               {upcomingDeadlines.slice(0, 1).map(task => (
-                <div key={task._id} className="relative">
+                <div key={task.id} className="relative">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{task.title}</span>
                     <span className="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded uppercase">High</span>
@@ -363,7 +361,7 @@ const Dashboard = () => {
                 const progress = [75, 60, 40][idx] || 50;
                 
                 return (
-                  <div key={project._id} className="space-y-3">
+                  <div key={project.id} className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={`w-9 h-9 rounded-xl ${color.bg} dark:bg-opacity-10 flex items-center justify-center ${color.text}`}>
@@ -396,7 +394,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
           {recentTasks.map((task) => (
-            <div key={task._id} className="flex items-center justify-between group p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-all">
+            <div key={task.id} className="flex items-center justify-between group p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-all">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600">
                   <CheckSquare size={18} />
@@ -433,7 +431,7 @@ const Dashboard = () => {
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Project *</label>
                 <select required value={newTaskData.projectId} onChange={(e) => setNewTaskData({...newTaskData, projectId: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm">
                   <option value="" disabled>Select a project</option>
-                  {projects.map(p => <option key={p._id} value={p._id}>{p.title}</option>)}
+                  {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">

@@ -7,12 +7,16 @@ const { Op } = require('sequelize');
 // Helper to map response for frontend
 const mapTask = (task) => {
   const t = task.toJSON();
+  // Parse comments if stored as JSON string
+  let comments = t.comments || [];
+  if (typeof comments === 'string') {
+    try { comments = JSON.parse(comments); } catch (e) { comments = []; }
+  }
   return {
     ...t,
     _id: t.id,
+    comments,
     assignedTo: t.Assignee ? { ...t.Assignee, _id: t.Assignee.id } : null,
-    // Note: comments author mapping would happen here if we used a separate model
-    // But for JSON simplicity, we'll keep it as is or map if needed.
   };
 };
 

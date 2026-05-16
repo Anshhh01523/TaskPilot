@@ -66,12 +66,20 @@ const KanbanColumn = ({ title, status, tasks, colorClass, onStatusChange, onAddC
               <p className="text-slate-500 dark:text-slate-400 text-xs line-clamp-2 mb-3 leading-relaxed">{task.description}</p>
             )}
 
-            {task.comments && task.comments.length > 0 && (
-              <div className="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg mb-3">
-                <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold mb-1"><MessageSquare size={10} /> {task.comments.length} Comments</div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 italic">"{task.comments[task.comments.length - 1].text}"</p>
-              </div>
-            )}
+            {(() => {
+              let commentsList = [];
+              if (typeof task.comments === 'string') {
+                try { commentsList = JSON.parse(task.comments); } catch (e) {}
+              } else if (Array.isArray(task.comments)) {
+                commentsList = task.comments;
+              }
+              return commentsList.length > 0 && (
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg mb-3">
+                  <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold mb-1"><MessageSquare size={10} /> {commentsList.length} Comments</div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 italic">"{commentsList[commentsList.length - 1].text}"</p>
+                </div>
+              );
+            })()}
             
             <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50">
               <div className="flex -space-x-1.5">
@@ -122,7 +130,7 @@ const ProjectBoard = () => {
     if (projects.length === 0) fetchProjects();
   }, [fetchTasks, fetchProjects, projectId, projects.length]);
 
-  const project = projects.find(p => p._id === projectId);
+  const project = projects.find(p => String(p._id) === String(projectId));
 
   const todoTasks = tasks.filter(t => t.status === 'TODO');
   const inProgressTasks = tasks.filter(t => t.status === 'IN_PROGRESS');

@@ -33,7 +33,7 @@ export const useTaskStore = create((set) => ({
     try {
       const res = await api.put(`/tasks/${taskId}`, { status: newStatus });
       set((state) => ({
-        tasks: state.tasks.map((t) => (t._id === taskId ? res.data : t)),
+        tasks: state.tasks.map((t) => (t.id === taskId ? res.data : t)),
       }));
       return true;
     } catch (error) {
@@ -46,7 +46,7 @@ export const useTaskStore = create((set) => ({
     try {
       const res = await api.post(`/tasks/${taskId}/comments`, { text });
       set((state) => ({
-        tasks: state.tasks.map((t) => (t._id === taskId ? res.data : t)),
+        tasks: state.tasks.map((t) => (t.id === taskId ? res.data : t)),
       }));
       return true;
     } catch (error) {
