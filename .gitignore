@@ -1,0 +1,14 @@
+node_modules/
+.env
+dist/
+build/
+.DS_Store
+*.log
+.gemini/
+.antigravity/
+brain/
+scratch/
+artifacts/
+database.sqlite*
+*.sqlite
+*.sqlite-journal

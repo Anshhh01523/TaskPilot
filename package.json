@@ -1,0 +1,22 @@
+{
+  "name": "taskpilot-root",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "server-install": "npm install --prefix server",
+    "install-all": "npm run client-install && npm run server-install",
+    "client-dev": "npm run dev --prefix client",
+    "server-dev": "npm run dev --prefix server",
+    "dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
+    "start": "npm run start --prefix server",
+    "build": "npm run build --prefix client",
+    "postinstall": "npm run install-all"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
